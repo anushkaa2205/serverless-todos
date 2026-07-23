@@ -1,0 +1,20 @@
+{
+  "name": "serverless-todos-backend",
+  "version": "1.0.0",
+  "description": "Serverless TODO API — Lambda, API Gateway, DynamoDB, Lambda authorizer",
+  "type": "module",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "logs:auth": "serverless logs -f authorizer --tail",
+    "logs:list": "serverless logs -f listTodos --tail"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.658.0",
+    "@aws-sdk/lib-dynamodb": "^3.658.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "serverless": "^4.4.0"
+  }
+}

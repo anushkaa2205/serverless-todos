@@ -1,0 +1,10 @@
+node_modules/
+.serverless/
+.esbuild/
+dist/
+.env
+.env.local
+!.env.example
+*.log
+.DS_Store
+frontend/.vercel/
