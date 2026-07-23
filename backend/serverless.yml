@@ -16,7 +16,7 @@ provider:
     cors:
       allowedOrigins:
         - http://localhost:5173
-        - https://REPLACE-ME.vercel.app
+        - https://serverless-todos-pi.vercel.app
       allowedHeaders: [Content-Type, Authorization]
       allowedMethods: [GET, POST, PATCH, DELETE, OPTIONS]
     authorizers:
