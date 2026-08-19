@@ -106,51 +106,59 @@ export default function App() {
     <>
       <style>{css}</style>
       <div className="stage">
-        <div className="blob blob-1" />
-        <div className="blob blob-2" />
-        <div className="blob blob-3" />
+        <div className="corner-tag">AWS · SERVERLESS</div>
 
         {!token ? (
-          <div className="card auth-card">
-            <div className="logo">✓</div>
-            <h1 className="brand">Serverless&nbsp;TODOs</h1>
-            <p className="tagline">Lambda · API Gateway · DynamoDB</p>
+          <div className="panel auth-panel">
+            <div className="panel-head">
+              <span className="mark">::</span>
+              <div>
+                <h1 className="title">todo-service</h1>
+                <p className="subtitle">lambda / api-gateway / dynamodb</p>
+              </div>
+            </div>
 
             <form onSubmit={login} className="stack">
+              <label className="field-label">Email</label>
               <input
                 className="field"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
+                placeholder="you@example.com"
               />
+              <label className="field-label">Password</label>
               <input
                 className="field"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 type="password"
-                placeholder="Password"
+                placeholder="••••••••"
               />
-              <button className="btn btn-primary">Log in →</button>
+              <button className="btn btn-primary">Sign in</button>
             </form>
 
-            {error && <p className="error">{error}</p>}
-            <p className="hint">
-              Demo login&nbsp;·&nbsp;<b>demo@example.com</b>&nbsp;/&nbsp;<b>Demo!2026</b>
-            </p>
+            {error && <p className="error">⚠ {error}</p>}
+            <div className="hint-box">
+              <span className="hint-label">Demo credentials</span>
+              <code>demo@example.com / Demo!2026</code>
+            </div>
           </div>
         ) : (
-          <div className="card app-card">
+          <div className="panel app-panel">
             <header className="app-head">
-              <div>
-                <h1 className="brand sm">My TODOs</h1>
-                <p className="count">
-                  {remaining === 0
-                    ? "All caught up 🎉"
-                    : `${remaining} thing${remaining > 1 ? "s" : ""} left to do`}
-                </p>
+              <div className="panel-head">
+                <span className="mark">::</span>
+                <div>
+                  <h1 className="title">my-tasks</h1>
+                  <p className="subtitle">
+                    {remaining === 0
+                      ? "queue clear"
+                      : `${remaining} pending item${remaining > 1 ? "s" : ""}`}
+                  </p>
+                </div>
               </div>
-              <button className="btn btn-ghost" onClick={logout}>
-                Log out
+              <button className="btn btn-outline" onClick={logout}>
+                Sign out
               </button>
             </header>
 
@@ -159,46 +167,42 @@ export default function App() {
                 className="field"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Add a new task…"
+                placeholder="New task…"
               />
-              <button className="btn btn-primary add-btn">+</button>
+              <button className="btn btn-primary add-btn">Add</button>
             </form>
 
-            {error && <p className="error">{error}</p>}
-
-            {loading && <p className="muted">Loading…</p>}
+            {error && <p className="error">⚠ {error}</p>}
+            {loading && <p className="muted">loading…</p>}
 
             {!loading && todos.length === 0 && (
               <div className="empty">
-                <div className="empty-emoji">🗒️</div>
-                <p>Nothing here yet.</p>
-                <span>Add your first task above.</span>
+                <span className="empty-mark">[ ]</span>
+                <p>Queue is empty</p>
+                <span className="muted">Add a task to get started</span>
               </div>
             )}
 
             <ul className="list">
-              {todos.map((t) => (
+              {todos.map((t, i) => (
                 <li key={t.todoId} className={`item ${t.completed ? "done" : ""}`}>
+                  <span className="idx">{String(i + 1).padStart(2, "0")}</span>
                   <button
                     className={`check ${t.completed ? "on" : ""}`}
                     onClick={() => toggle(t)}
                     aria-label="toggle"
                   >
-                    {t.completed && "✓"}
+                    {t.completed && "×"}
                   </button>
                   <span className="item-title">{t.title}</span>
-                  <button
-                    className="del"
-                    onClick={() => remove(t.todoId)}
-                    aria-label="delete"
-                  >
-                    ✕
+                  <button className="del" onClick={() => remove(t.todoId)} aria-label="delete">
+                    remove
                   </button>
                 </li>
               ))}
             </ul>
 
-            <footer className="foot">Powered by AWS Lambda · API Gateway · DynamoDB</footer>
+            <footer className="foot">AWS Lambda · API Gateway · DynamoDB · Lambda Authorizer</footer>
           </div>
         )}
       </div>
@@ -208,157 +212,243 @@ export default function App() {
 
 const css = `
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
 
 .stage {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 32px;
   position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 45%, #ec4899 100%);
+  background-color: #f2ede3;
+  background-image:
+    linear-gradient(#00000009 1px, transparent 1px),
+    linear-gradient(90deg, #00000009 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
-.blob {
+.corner-tag {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.55;
-  animation: float 14s ease-in-out infinite;
-}
-.blob-1 { width: 340px; height: 340px; background: #f472b6; top: -80px; left: -60px; }
-.blob-2 { width: 300px; height: 300px; background: #38bdf8; bottom: -70px; right: -50px; animation-delay: -4s; }
-.blob-3 { width: 260px; height: 260px; background: #a78bfa; top: 40%; left: 55%; animation-delay: -8s; }
-@keyframes float {
-  0%,100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(20px,-30px) scale(1.1); }
+  top: 24px;
+  right: 28px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #8a8370;
+  border: 1px solid #c9c2ac;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background: #f9f6ef;
 }
 
-.card {
+.panel {
   position: relative;
-  z-index: 1;
   width: 100%;
-  max-width: 460px;
-  background: rgba(255,255,255,0.82);
-  backdrop-filter: blur(22px);
-  border: 1px solid rgba(255,255,255,0.6);
-  border-radius: 26px;
-  padding: 40px 34px;
-  box-shadow: 0 24px 60px rgba(30,10,60,0.28);
-  animation: pop 0.5s cubic-bezier(.2,.9,.3,1.2);
+  max-width: 440px;
+  background: #fffdf8;
+  border: 2px solid #24211a;
+  border-radius: 4px;
+  padding: 36px 32px;
+  box-shadow: 8px 8px 0 #24211a;
 }
-@keyframes pop { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: none; } }
 
-.logo {
-  width: 58px; height: 58px; margin: 0 auto 16px;
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.mark {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #b5502a;
+  background: #f6e4d8;
+  border: 2px solid #24211a;
+  width: 42px; height: 42px;
+  flex-shrink: 0;
   display: grid; place-items: center;
-  font-size: 28px; font-weight: 800; color: #fff;
-  background: linear-gradient(135deg,#6366f1,#ec4899);
-  border-radius: 18px;
-  box-shadow: 0 10px 24px rgba(99,102,241,0.5);
+  border-radius: 4px;
+}
+.title {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 21px;
+  font-weight: 700;
+  color: #24211a;
+  letter-spacing: -0.3px;
+}
+.subtitle {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  color: #8a8370;
+  margin-top: 2px;
 }
 
-.brand {
-  text-align: center;
-  font-size: 30px;
-  font-weight: 800;
-  background: linear-gradient(135deg,#6366f1,#ec4899);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
+.stack { display: flex; flex-direction: column; gap: 6px; }
+.field-label {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8a8370;
+  margin-top: 10px;
 }
-.brand.sm { font-size: 26px; text-align: left; }
-.tagline { text-align: center; color: #7c7a90; font-size: 13px; margin: 6px 0 26px; font-weight: 500; }
-
-.stack { display: flex; flex-direction: column; gap: 12px; }
+.field-label:first-of-type { margin-top: 0; }
 
 .field {
   width: 100%;
-  padding: 14px 16px;
-  font-size: 15px;
-  border: 2px solid #ece9f5;
-  border-radius: 14px;
-  background: #fff;
-  transition: border-color .2s, box-shadow .2s;
+  padding: 12px 14px;
+  font-size: 14.5px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  border: 2px solid #24211a;
+  border-radius: 4px;
+  background: #fffdf8;
+  color: #24211a;
   outline: none;
+  transition: box-shadow .15s, transform .15s;
 }
-.field:focus { border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139,92,246,0.15); }
+.field:focus { box-shadow: 3px 3px 0 #b5502a; transform: translate(-1px,-1px); }
 
 .btn {
-  border: none; cursor: pointer;
-  font-weight: 700; font-size: 15px;
-  border-radius: 14px;
-  transition: transform .15s, box-shadow .2s, opacity .2s;
+  border: 2px solid #24211a;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  border-radius: 4px;
+  transition: transform .12s, box-shadow .12s;
 }
-.btn:active { transform: scale(.96); }
+.btn:active { transform: translate(2px,2px); box-shadow: none !important; }
 
 .btn-primary {
-  padding: 14px;
-  color: #fff;
-  background: linear-gradient(135deg,#6366f1,#8b5cf6 55%,#ec4899);
-  box-shadow: 0 10px 22px rgba(124,58,237,0.42);
+  margin-top: 16px;
+  padding: 13px;
+  color: #fffdf8;
+  background: #b5502a;
+  box-shadow: 4px 4px 0 #24211a;
 }
-.btn-primary:hover { box-shadow: 0 14px 28px rgba(124,58,237,0.55); }
+.btn-primary:hover { box-shadow: 5px 5px 0 #24211a; }
 
-.btn-ghost {
+.btn-outline {
   padding: 9px 16px;
-  color: #6d28d9;
-  background: rgba(124,58,237,0.1);
+  color: #24211a;
+  background: #fffdf8;
+  box-shadow: 3px 3px 0 #24211a;
 }
-.btn-ghost:hover { background: rgba(124,58,237,0.18); }
+.btn-outline:hover { background: #f2ede3; }
 
-.error { color: #e11d48; font-size: 14px; text-align: center; margin-top: 14px; font-weight: 600; }
-.hint { text-align: center; color: #9995ab; font-size: 12.5px; margin-top: 20px; }
-.hint b { color: #6d28d9; }
-.muted { color: #9995ab; text-align: center; padding: 12px; }
+.error {
+  color: #a3271a;
+  font-size: 13px;
+  margin-top: 16px;
+  font-weight: 600;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
 
-.app-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
-.count { color: #8b5cf6; font-size: 13.5px; font-weight: 600; margin-top: 4px; }
+.hint-box {
+  margin-top: 24px;
+  padding: 12px 14px;
+  background: #f2ede3;
+  border: 1px dashed #c9c2ac;
+  border-radius: 4px;
+}
+.hint-label {
+  display: block;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8a8370;
+  margin-bottom: 4px;
+}
+.hint-box code {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12.5px;
+  color: #b5502a;
+  font-weight: 700;
+}
 
-.add-row { display: flex; gap: 10px; margin-bottom: 20px; }
-.add-btn { width: 52px; font-size: 24px; line-height: 1; flex-shrink: 0; }
+.app-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
 
-.empty { text-align: center; padding: 34px 0 20px; color: #b5b1c5; }
-.empty-emoji { font-size: 46px; margin-bottom: 10px; }
-.empty p { font-weight: 700; color: #6b6880; }
-.empty span { font-size: 13px; }
+.add-row { display: flex; gap: 10px; margin-bottom: 22px; }
+.add-btn { flex-shrink: 0; padding: 0 18px; box-shadow: 4px 4px 0 #24211a; }
+.add-btn:hover { box-shadow: 5px 5px 0 #24211a; }
 
-.list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.muted { color: #a39c86; font-family: 'Consolas', 'Courier New', monospace; font-size: 12.5px; }
+
+.empty { text-align: center; padding: 30px 0 16px; }
+.empty-mark {
+  display: inline-block;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 24px;
+  color: #c9c2ac;
+  margin-bottom: 10px;
+}
+.empty p { font-weight: 700; color: #5c5745; font-family: 'Consolas', 'Courier New', monospace; margin-bottom: 4px; }
+
+.list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .item {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px;
-  background: #fff;
-  border: 1px solid #f0edf7;
-  border-radius: 14px;
-  animation: slide .35s ease;
-  transition: box-shadow .2s, transform .2s;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: #fffdf8;
+  border: 1.5px solid #24211a;
+  border-radius: 4px;
+  transition: transform .12s;
 }
-.item:hover { box-shadow: 0 8px 20px rgba(80,40,120,0.1); transform: translateX(2px); }
-@keyframes slide { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+.item:hover { transform: translateX(2px); }
+
+.idx {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  color: #c9c2ac;
+  flex-shrink: 0;
+  width: 18px;
+}
 
 .check {
-  width: 26px; height: 26px; flex-shrink: 0;
-  border: 2px solid #cfc9e0; border-radius: 9px;
-  background: #fff; cursor: pointer;
+  width: 22px; height: 22px; flex-shrink: 0;
+  border: 2px solid #24211a; border-radius: 3px;
+  background: #fffdf8; cursor: pointer;
   display: grid; place-items: center;
-  color: #fff; font-size: 15px; font-weight: 800;
-  transition: all .2s;
+  color: #fffdf8; font-size: 15px; font-weight: 800;
+  font-family: 'Consolas', 'Courier New', monospace;
+  transition: all .15s;
 }
-.check.on { background: linear-gradient(135deg,#10b981,#34d399); border-color: #10b981; }
+.check.on { background: #b5502a; }
 
-.item-title { flex: 1; font-size: 15.5px; color: #2a2740; font-weight: 500; }
-.item.done .item-title { text-decoration: line-through; color: #b3aec6; }
+.item-title {
+  flex: 1;
+  font-size: 14.5px;
+  color: #24211a;
+  font-weight: 500;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+.item.done .item-title { text-decoration: line-through; color: #a39c86; }
 
 .del {
-  width: 30px; height: 30px; flex-shrink: 0;
-  border: none; border-radius: 9px;
-  background: transparent; color: #cbc6da;
-  font-size: 15px; cursor: pointer;
-  transition: all .2s;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #c9c2ac;
+  font-size: 11px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: 4px 6px;
+  transition: color .15s;
 }
-.del:hover { background: #fee2e2; color: #ef4444; }
+.del:hover { color: #a3271a; }
 
-.foot { text-align: center; color: #b5b1c5; font-size: 12px; margin-top: 24px; }
+.foot {
+  text-align: center;
+  color: #a39c86;
+  font-size: 10.5px;
+  margin-top: 26px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  letter-spacing: 0.3px;
+}
 `;
