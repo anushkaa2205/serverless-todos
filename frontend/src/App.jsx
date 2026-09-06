@@ -6,8 +6,8 @@ export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
-  const [email, setEmail] = useState("demo@example.com");
-  const [password, setPassword] = useState("Demo!2026");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -138,10 +138,6 @@ export default function App() {
             </form>
 
             {error && <p className="error">⚠ {error}</p>}
-            <div className="hint-box">
-              <span className="hint-label">Demo credentials</span>
-              <code>demo@example.com / Demo!2026</code>
-            </div>
           </div>
         ) : (
           <div className="panel app-panel">
